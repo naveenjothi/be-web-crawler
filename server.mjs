@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import express from "express";
-import { fetchHTML, extractData, extractLinks } from "./crawler.mjs";
+import { fetchHTML, extractData, extractLinks } from "./services/crawler.mjs";
 import { findOne, insertOne, updateOne } from "./repos/client.repo.mjs";
 
 const app = express();

@@ -1,4 +1,4 @@
-import pool from "../db.mjs";
+import pool from "../services/db.mjs";
 
 export const insertOne = async (data) => {
   const client = await pool.connect();
