@@ -31,12 +31,16 @@ app.get("/get-links", async (req, res) => {
     return res.status(400).json({ error: "URL parameter is required" });
   }
 
-  const html = await fetchHTML(url);
-  if (html) {
-    const data = extractLinks(html);
-    return res.json({ links: data });
-  } else {
-    return res.status(500).json({ error: "Failed to fetch the webpage" });
+  try {
+    const html = await fetchHTML(url);
+    if (html) {
+      const data = extractLinks(html);
+      return res.json({ links: data });
+    } else {
+      return res.status(500).json({ error: "Failed to fetch the webpage" });
+    }
+  } catch (error) {
+    return res.status(400).json({ status: "failed", message: error.message });
   }
 });
 
@@ -66,13 +70,17 @@ app.post("/clients", async (req, res) => {
     return res.status(400).json({ error: "Not a valid PIN Code number" });
   }
 
-  const insertedId = await insertOne(input);
-  return res.status(201).json({
-    data: {
-      ...input,
-      id: insertedId,
-    },
-  });
+  try {
+    const insertedId = await insertOne(input);
+    return res.status(201).json({
+      data: {
+        ...input,
+        id: insertedId,
+      },
+    });
+  } catch (error) {
+    return res.status(400).json({ status: "failed", message: error.message });
+  }
 });
 
 app.post("/clients/:id", async (req, res) => {
@@ -82,12 +90,15 @@ app.post("/clients/:id", async (req, res) => {
   if (input?.pinCode?.length !== 6) {
     return res.status(400).json({ error: "Not a valid PIN Code number" });
   }
+  try {
+    await updateOne(id, input);
 
-  await updateOne(id, input);
-
-  return res
-    .status(201)
-    .json({ status: "success", message: "Record updated successfully." });
+    return res
+      .status(201)
+      .json({ status: "success", message: "Record updated successfully." });
+  } catch (error) {
+    return res.status(400).json({ status: "failed", message: error.message });
+  }
 });
 
 app.listen(port, () => {

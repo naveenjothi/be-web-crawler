@@ -8,6 +8,7 @@ export const fetchHTML = async (url) => {
     return data;
   } catch (error) {
     console.error(`Error fetching HTML for ${url}:`, error);
+    throw error;
   }
 };
 

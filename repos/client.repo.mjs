@@ -37,6 +37,7 @@ export const insertOne = async (data) => {
   } catch (error) {
     await client.query("ROLLBACK");
     console.error("Error inserting data:", error);
+    throw error;
   } finally {
     client.release();
   }
@@ -52,6 +53,7 @@ export const findOne = async (id) => {
     return result.rows[0];
   } catch (error) {
     console.error("Error finding data:", error);
+    throw error;
   } finally {
     client.release();
   }
@@ -85,6 +87,7 @@ export const updateOne = async (id, input) => {
   } catch (error) {
     await client.query("ROLLBACK");
     console.error("Error updating data:", error);
+    throw error;
   } finally {
     client.release();
   }
