@@ -6,7 +6,7 @@ export const insertOne = async (data) => {
     await client.query("BEGIN");
     const insertQuery = `
       INSERT INTO company_info (
-        companyName, roC, companyStatus, companyActivity, cin, registrationDate, category, subCategory, companyClass, authorisedCapital, paidUpCapital, state, pinCode, country, address, email
+        "companyName", "roC", "companyStatus", "companyActivity", cin, "registrationDate", category, "subCategory", "companyClass", "authorisedCapital", "paidUpCapital", state, "pinCode", country, address, email
       ) VALUES (
         $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16
       ) RETURNING id;
@@ -66,7 +66,7 @@ export const updateOne = async (id, input) => {
   const setClauses = [];
 
   for (const column in input) {
-    setClauses.push(`${column} = $${valueIndex}`);
+    setClauses.push(`"${column}" = $${valueIndex}`);
     values.push(input[column]);
     valueIndex++;
   }
