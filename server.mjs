@@ -18,23 +18,6 @@ app.get("/crawl", async (req, res) => {
   const html = await fetchHTML(url);
   if (html) {
     const data = extractData(html);
-
-    if (!input?.cin || !input?.pinCode || !input?.companyName) {
-      return res
-        .status(400)
-        .json({ error: "CIN, PIN Code and companyName are required" });
-    }
-
-    if (input?.cin.length !== 21) {
-      return res.status(400).json({ error: "Not a valid CIN number" });
-    }
-
-    if (input?.pinCode.length !== 6) {
-      return res.status(400).json({ error: "Not a valid PIN Code number" });
-    }
-
-    await insertOne(data);
-
     return res.json({ data });
   } else {
     return res.status(500).json({ error: "Failed to fetch the webpage" });
