@@ -90,6 +90,11 @@ app.post("/clients/:id", async (req, res) => {
   if (input?.pinCode?.length !== 6) {
     return res.status(400).json({ error: "Not a valid PIN Code number" });
   }
+  const exists = await findOne(id);
+  if (!exists) {
+    return res.status(404).json({ error: "Document Doesnot exists" });
+  }
+
   try {
     await updateOne(id, input);
 

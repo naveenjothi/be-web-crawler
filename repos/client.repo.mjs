@@ -60,10 +60,6 @@ export const findOne = async (id) => {
 };
 
 export const updateOne = async (id, input) => {
-  const exists = await findOne(id);
-  if (!exists) {
-    return res.status(400).json({ error: "Document Doesnot exists" });
-  }
   const client = await pool.connect();
   let valueIndex = 1;
   const values = [];
