@@ -56,3 +56,36 @@ export const findOne = async (id) => {
     client.release();
   }
 };
+
+export const updateOne = async (id, input) => {
+  const exists = await findOne(id);
+  if (!exists) {
+    return res.status(400).json({ error: "Document Doesnot exists" });
+  }
+  const client = await pool.connect();
+  let valueIndex = 1;
+  const values = [];
+  const setClauses = [];
+
+  for (const column in input) {
+    setClauses.push(`${column} = $${valueIndex}`);
+    values.push(input[column]);
+    valueIndex++;
+  }
+
+  const updateQuery = `UPDATE company_info SET ${setClauses.join(
+    ", "
+  )} WHERE id = $${valueIndex}`;
+  values.push(id);
+
+  try {
+    await client.query("BEGIN");
+    await client.query(updateQuery, values);
+    await client.query("COMMIT");
+  } catch (error) {
+    await client.query("ROLLBACK");
+    console.error("Error updating data:", error);
+  } finally {
+    client.release();
+  }
+};

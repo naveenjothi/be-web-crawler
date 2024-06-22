@@ -3,7 +3,7 @@ dotenv.config();
 
 import express from "express";
 import { fetchHTML, extractData, extractLinks } from "./crawler.mjs";
-import { findOne, insertOne } from "./repos/client.repo.mjs";
+import { findOne, insertOne, updateOne } from "./repos/client.repo.mjs";
 
 const app = express();
 const port = process.env.APP_PORT ? Number(process.env.APP_PORT) : 3000;
@@ -52,17 +52,17 @@ app.get("/clients/:id", async (req, res) => {
 app.post("/clients", async (req, res) => {
   const input = req.body;
 
-  if (!input.cin || !input.pinCode || !input.companyName) {
+  if (!input?.cin || !input?.pinCode || !input?.companyName) {
     return res
       .status(400)
       .json({ error: "CIN, PIN Code and companyName are required" });
   }
 
-  if (input.cin.length !== 21) {
+  if (input?.cin.length !== 21) {
     return res.status(400).json({ error: "Not a valid CIN number" });
   }
 
-  if (input.pinCode.length !== 6) {
+  if (input?.pinCode.length !== 6) {
     return res.status(400).json({ error: "Not a valid PIN Code number" });
   }
 
@@ -73,6 +73,21 @@ app.post("/clients", async (req, res) => {
       id: insertedId,
     },
   });
+});
+
+app.post("/clients/:id", async (req, res) => {
+  const input = req.body.input;
+  const id = req.params.id;
+
+  if (input?.pinCode?.length !== 6) {
+    return res.status(400).json({ error: "Not a valid PIN Code number" });
+  }
+
+  await updateOne(id, input);
+
+  return res
+    .status(201)
+    .json({ status: "success", message: "Record updated successfully." });
 });
 
 app.listen(port, () => {
