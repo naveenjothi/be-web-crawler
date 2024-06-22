@@ -16,7 +16,7 @@ app.get("/crawl", async (req, res) => {
   const html = await fetchHTML(url);
   if (html) {
     const data = extractData(html);
-    return res.json({ links: data });
+    return res.json({ data });
   } else {
     return res.status(500).json({ error: "Failed to fetch the webpage" });
   }
