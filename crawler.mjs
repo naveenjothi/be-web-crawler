@@ -13,7 +13,6 @@ export const fetchHTML = async (url) => {
 
 export const extractData = (html) => {
   const $ = cheerio.load(html);
-  const data = [];
   const attrs = [];
   const rowElements = $(".row");
   rowElements.each((index, element) => {
@@ -26,6 +25,17 @@ export const extractData = (html) => {
     }
   });
   return Object.fromEntries(attrs);
+};
+
+export const extractLinks = (html) => {
+  const $ = cheerio.load(html);
+  const data = [];
+  $("a").each((index, element) => {
+    const link = $(element).attr("href");
+    if (link.startsWith("/company"))
+      data.push(`https://www.companydetails.in${link}`);
+  });
+  return data;
 };
 
 export const startCrawler = async (url) => {
