@@ -17,6 +17,7 @@ exports.up = (pgm) => {
     country: { type: "varchar(50)", notNull: true },
     address: { type: "text", notNull: true },
     email: { type: "varchar(255)", notNull: true },
+    isDeleted: { type: "boolean", default: false },
   });
 };
 

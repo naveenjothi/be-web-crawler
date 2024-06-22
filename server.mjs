@@ -105,6 +105,24 @@ app.post("/clients/:id", async (req, res) => {
   }
 });
 
+app.delete("/clients/:id", async (req, res) => {
+  const id = req.params.id;
+  const exists = await findOne(id);
+  if (!exists) {
+    return res.status(404).json({ error: "Document Doesnot exists" });
+  }
+
+  try {
+    await updateOne(id, { isDeleted: true });
+
+    return res
+      .status(201)
+      .json({ status: "success", message: "Record deleted successfully." });
+  } catch (error) {
+    return res.status(400).json({ status: "failed", message: error.message });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
