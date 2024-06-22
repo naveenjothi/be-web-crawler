@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node server.mjs",
     "migrate": "node-pg-migrate",
-    "migrate:up": "node ./migrate.mjs"
+    "migrate:clients": "node ./services/migrate.mjs"
   },
   "keywords": [],
   "author": "Naveen",
