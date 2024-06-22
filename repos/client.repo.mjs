@@ -43,14 +43,12 @@ export const insertOne = async (data) => {
 };
 
 export const findOne = async (id) => {
-  console.log("id", id);
   const client = await pool.connect();
   try {
     const result = await client.query(
       "SELECT * FROM company_info WHERE id = $1",
       [id]
     );
-    console.log(JSON.stringify(result));
     return result.rows[0];
   } catch (error) {
     console.error("Error finding data:", error);
