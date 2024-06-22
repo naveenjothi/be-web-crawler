@@ -3,6 +3,7 @@ dotenv.config();
 
 import express from "express";
 import { fetchHTML, extractData, extractLinks } from "./crawler.mjs";
+import { insertOne } from "./repos/client.repo.mjs";
 
 const app = express();
 const port = process.env.APP_PORT ? Number(process.env.APP_PORT) : 3000;
@@ -16,6 +17,7 @@ app.get("/crawl", async (req, res) => {
   const html = await fetchHTML(url);
   if (html) {
     const data = extractData(html);
+    await insertOne(data);
     return res.json({ data });
   } else {
     return res.status(500).json({ error: "Failed to fetch the webpage" });
