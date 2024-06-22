@@ -5,7 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node server.mjs"
+    "start": "node server.mjs",
+    "migrate": "node-pg-migrate"
   },
   "keywords": [],
   "author": "Naveen",
@@ -17,5 +18,8 @@
     "express": "^4.19.2",
     "lodash": "^4.17.21",
     "pg": "^8.12.0"
+  },
+  "devDependencies": {
+    "node-pg-migrate": "^7.5.1"
   }
 }
