@@ -1,6 +1,7 @@
 import pool from "../services/db.mjs";
 import client from "../services/elasticsearch.cjs";
 import { searchAnalyzer } from "../es-mappings/configs/search.analyzer.mjs";
+import { getMultiMatchQuery } from "../es-mappings/helpers/query.helper.mjs";
 export const insertOne = async (data) => {
   const client = await pool.connect();
   try {
@@ -134,7 +135,26 @@ export const searchDocuments = async (index, query) => {
       index,
       body: {
         query: {
-          match: query,
+          bool: {
+            must: [
+              ...(query
+                ? [
+                    getMultiMatchQuery(
+                      query,
+                      [
+                        "companyName.autocomplete",
+                        "email.autocomplete",
+                        "cin.autocomplete",
+                      ],
+                      {
+                        operator: "and",
+                        type: "phrase_prefix",
+                      }
+                    ),
+                  ]
+                : []),
+            ],
+          },
         },
       },
     });

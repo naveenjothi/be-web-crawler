@@ -140,13 +140,9 @@ app.delete("/clients/:id", async (req, res) => {
 });
 
 app.get("/clients", async (req, res) => {
-  const query = req.query.q;
+  const query = req.query?.q || "";
 
-  if (!query) {
-    return res.status(400).json({ error: "Query parameter is required" });
-  }
-
-  const results = await searchDocuments(esIndexName, { companyName: query });
+  const results = await searchDocuments(esIndexName, query);
 
   return res.json(results);
 });
