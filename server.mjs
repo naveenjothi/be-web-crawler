@@ -3,10 +3,25 @@ dotenv.config();
 
 import express from "express";
 import { fetchHTML, extractData, extractLinks } from "./services/crawler.mjs";
-import { findOne, insertOne, updateOne } from "./repos/client.repo.mjs";
+import {
+  findOne,
+  insertOne,
+  updateOne,
+  indexDocument,
+  searchDocuments,
+  createIndex,
+} from "./repos/client.repo.mjs";
+import { clientMappings } from "./es-mappings/client.mapping.mjs";
 
 const app = express();
 const port = process.env.APP_PORT ? Number(process.env.APP_PORT) : 3000;
+const esIndexName = "clients";
+
+const initializeElasticsearch = async () => {
+  await createIndex(esIndexName, clientMappings);
+};
+
+initializeElasticsearch().catch(console.error);
 
 app.use(express.json());
 
@@ -71,6 +86,7 @@ app.post("/clients", async (req, res) => {
 
   try {
     const insertedId = await insertOne(input);
+    indexDocument("clients", insertedId, input);
     return res.status(201).json({
       data: {
         ...input,
@@ -121,6 +137,18 @@ app.delete("/clients/:id", async (req, res) => {
   } catch (error) {
     return res.status(400).json({ status: "failed", message: error.message });
   }
+});
+
+app.get("/clients", async (req, res) => {
+  const query = req.query.q;
+
+  if (!query) {
+    return res.status(400).json({ error: "Query parameter is required" });
+  }
+
+  const results = await searchDocuments(esIndexName, { companyName: query });
+
+  return res.json(results);
 });
 
 app.listen(port, () => {

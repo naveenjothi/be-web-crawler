@@ -1,5 +1,6 @@
 import pool from "../services/db.mjs";
-
+import client from "../services/elasticsearch.cjs";
+import { searchAnalyzer } from "../es-mappings/configs/search.analyzer.mjs";
 export const insertOne = async (data) => {
   const client = await pool.connect();
   try {
@@ -32,9 +33,9 @@ export const insertOne = async (data) => {
       false,
     ];
 
-    await client.query(insertQuery, values);
-
+    const res = await client.query(insertQuery, values);
     await client.query("COMMIT");
+    return res.rows[0].id;
   } catch (error) {
     await client.query("ROLLBACK");
     console.error("Error inserting data:", error);
@@ -87,5 +88,58 @@ export const updateOne = async (id, input) => {
     throw error;
   } finally {
     client.release();
+  }
+};
+
+export const createIndex = async (indexName, mappings) => {
+  try {
+    const exists = await client.indices.exists({ index: indexName });
+    console.log("exists", exists);
+    if (exists) {
+      console.log(`Index ${indexName} already exists`);
+      return;
+    }
+
+    await client.indices.create({
+      index: indexName,
+      body: {
+        mappings,
+        settings: {
+          ...searchAnalyzer,
+        },
+      },
+    });
+    console.log(`Index ${indexName} created with mappings:`, mappings);
+  } catch (error) {
+    console.error("Error creating index:", error.meta.body.error);
+  }
+};
+
+export const indexDocument = async (index, id, body) => {
+  try {
+    console.log(`Indexing document to index ${index} with id ${id}`);
+    client.create({
+      index,
+      id,
+      body,
+    });
+  } catch (error) {
+    console.error("Error indexing document:", error.meta.body.error);
+  }
+};
+
+export const searchDocuments = async (index, query) => {
+  try {
+    const response = await client.search({
+      index,
+      body: {
+        query: {
+          match: query,
+        },
+      },
+    });
+    return response.hits.hits;
+  } catch (error) {
+    console.error("Error searching documents:", error);
   }
 };
