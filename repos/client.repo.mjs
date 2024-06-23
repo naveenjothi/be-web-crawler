@@ -138,7 +138,10 @@ export const searchDocuments = async (index, query) => {
         },
       },
     });
-    return response.hits.hits;
+    return {
+      count: response?.hits?.total?.value,
+      items: response.hits.hits.map((x) => ({ id: x._id, ...x._source })),
+    };
   } catch (error) {
     console.error("Error searching documents:", error);
   }

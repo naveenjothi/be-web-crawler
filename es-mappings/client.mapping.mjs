@@ -4,7 +4,11 @@ export const clientMappings = {
       type: "text",
       fields: {
         keyword: { type: "keyword" },
-        autocomplete: { type: "text", analyzer: "autocomplete" },
+        autocomplete: {
+          analyzer: "autocomplete",
+          search_analyzer: "standard",
+          type: "search_as_you_type",
+        },
       },
     },
     roC: {
@@ -29,7 +33,11 @@ export const clientMappings = {
       type: "text",
       fields: {
         keyword: { type: "keyword" },
-        autocomplete: { type: "text", analyzer: "autocomplete" },
+        autocomplete: {
+          analyzer: "autocomplete",
+          search_analyzer: "standard",
+          type: "search_as_you_type",
+        },
       },
     },
     category: {
@@ -78,7 +86,11 @@ export const clientMappings = {
       type: "text",
       fields: {
         keyword: { type: "keyword" },
-        autocomplete: { type: "text", analyzer: "autocomplete" },
+        autocomplete: {
+          analyzer: "autocomplete",
+          search_analyzer: "standard",
+          type: "search_as_you_type",
+        },
       },
     },
   },
