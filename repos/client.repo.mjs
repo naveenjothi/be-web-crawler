@@ -129,31 +129,29 @@ export const indexDocument = async (index, id, body) => {
   }
 };
 
-export const searchDocuments = async (index, query) => {
+export const searchDocuments = async (index, query, opts = {}) => {
+  const must = [];
+  if (query) {
+    must.push(
+      getMultiMatchQuery(
+        query,
+        ["companyName.autocomplete", "email.autocomplete", "cin.autocomplete"],
+        {
+          operator: "and",
+          type: "phrase_prefix",
+        }
+      )
+    );
+  }
   try {
     const response = await client.search({
       index,
       body: {
+        size: opts.size,
+        from: opts.page,
         query: {
           bool: {
-            must: [
-              ...(query
-                ? [
-                    getMultiMatchQuery(
-                      query,
-                      [
-                        "companyName.autocomplete",
-                        "email.autocomplete",
-                        "cin.autocomplete",
-                      ],
-                      {
-                        operator: "and",
-                        type: "phrase_prefix",
-                      }
-                    ),
-                  ]
-                : []),
-            ],
+            must,
           },
         },
       },

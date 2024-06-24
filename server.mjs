@@ -141,8 +141,10 @@ app.delete("/clients/:id", async (req, res) => {
 
 app.get("/clients", async (req, res) => {
   const query = req.query?.q || "";
+  const page = req.query?.page || 0;
+  const size = req.query?.size || 10;
 
-  const results = await searchDocuments(esIndexName, query);
+  const results = await searchDocuments(esIndexName, query, { page, size });
 
   return res.json(results);
 });
