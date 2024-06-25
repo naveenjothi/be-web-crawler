@@ -68,7 +68,7 @@ app.get("/clients/:id", async (req, res) => {
 });
 
 app.post("/clients", async (req, res) => {
-  const input = req.body;
+  const input = req.body.input;
 
   if (!input?.cin || !input?.pinCode || !input?.companyName) {
     return res
@@ -79,6 +79,8 @@ app.post("/clients", async (req, res) => {
   if (input?.cin.length !== 21) {
     return res.status(400).json({ error: "Not a valid CIN number" });
   }
+
+  console.log(input?.pinCode?.length);
 
   if (input?.pinCode.length !== 6) {
     return res.status(400).json({ error: "Not a valid PIN Code number" });
