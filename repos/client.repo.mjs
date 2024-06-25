@@ -144,6 +144,18 @@ export const updateDocument = async (index, id, body) => {
   }
 };
 
+export const deleteDocument = async (index, id) => {
+  try {
+    console.log(`Deleting document from index ${index} with id ${id}`);
+    client.delete({
+      index,
+      id,
+    });
+  } catch (error) {
+    console.error("Error deleting document:", error.meta.body.error);
+  }
+};
+
 export const searchDocuments = async (index, query, opts = {}) => {
   const must = [];
   if (query) {

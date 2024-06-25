@@ -7,3 +7,11 @@ export const getMultiMatchQuery = (query, fields = [], opts = {}) => {
     },
   };
 };
+
+export const getBooleanQuery = (path, query) => {
+  return {
+    term: {
+      [path]: query,
+    },
+  };
+};

@@ -11,6 +11,7 @@ import {
   searchDocuments,
   createIndex,
   updateDocument,
+  deleteDocument,
 } from "./repos/client.repo.mjs";
 import { clientMappings } from "./es-mappings/client.mapping.mjs";
 
@@ -88,6 +89,7 @@ app.post("/clients", async (req, res) => {
   }
 
   try {
+    input.isDeleted = false;
     const insertedId = await insertOne(input);
     indexDocument("clients", insertedId, input);
     return res.status(201).json({
@@ -132,8 +134,9 @@ app.delete("/clients/:id", async (req, res) => {
   }
 
   try {
-    await updateOne(id, { isDeleted: true });
-
+    const input = { isDeleted: true };
+    await updateOne(id, input);
+    deleteDocument("clients", id);
     return res
       .status(201)
       .json({ status: "success", message: "Record deleted successfully." });
