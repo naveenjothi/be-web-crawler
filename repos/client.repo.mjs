@@ -129,6 +129,21 @@ export const indexDocument = async (index, id, body) => {
   }
 };
 
+export const updateDocument = async (index, id, body) => {
+  try {
+    console.log(`Updating document to index ${index} with id ${id}`);
+    client.update({
+      index,
+      id,
+      body: {
+        doc: body,
+      },
+    });
+  } catch (error) {
+    console.error("Error indexing document:", error.meta.body.error);
+  }
+};
+
 export const searchDocuments = async (index, query, opts = {}) => {
   const must = [];
   if (query) {

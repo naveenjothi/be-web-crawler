@@ -10,6 +10,7 @@ import {
   indexDocument,
   searchDocuments,
   createIndex,
+  updateDocument,
 } from "./repos/client.repo.mjs";
 import { clientMappings } from "./es-mappings/client.mapping.mjs";
 
@@ -114,7 +115,7 @@ app.post("/clients/:id", async (req, res) => {
 
   try {
     await updateOne(id, input);
-
+    updateDocument("clients", id, input);
     return res
       .status(201)
       .json({ status: "success", message: "Record updated successfully." });
