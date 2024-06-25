@@ -14,10 +14,10 @@ const bootstrap = async () => {
     const crawledResp = await axios.get(`${serverURL}/crawl?url=${link}`);
     try {
       console.log("Processing link", index, link);
-      const input = crawledResp.data.data;
-      await axios.post(`${serverURL}/clients`, input);
+      const payload = crawledResp.data.data;
+      await axios.post(`${serverURL}/clients`, { input: payload });
     } catch (error) {
-      console.error(error.message);
+      console.error(error);
       failedLinks.push(link);
     }
   }
